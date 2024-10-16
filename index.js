@@ -10,15 +10,14 @@ process.on('unhandledRejection', err => {
 });
 
 const COMMANDS = {  // bot commands
-    TEXT: 'Simple text message',
+    2: 'Simple text message',
+     3: 'Simple text message',
+     4: 'Simple text message',
     IMAGE: 'Send image',
     DOCUMENT: 'Send document',
     VIDEO: 'Send video',
     CONTACT: 'Send contact',
-    PRODUCT: 'Send product',
-    GROUP_CREATE: 'Create group',
-    GROUP_TEXT: 'Simple text message for the group',
-    GROUPS_IDS: 'Get the id\'s of your three groups'
+    1: 'Send product',
 }
 
 const FILES = { // file path
@@ -102,10 +101,58 @@ async function handleNewMessages(req, res){ // handle messages
             const command = Object.keys(COMMANDS)[+message.text?.body?.trim() - 1];
 
             switch (command) { // depending on the command, perform an action
-                case 'TEXT': {
-                    sender.body = 'Simple text message';
+                case '2': {
+                    sender.body = 'Perfecto, hemos recibido tu solicitud. En breve recibirás una respuesta o actualización. Si tienes alguna otra duda, no dudes en preguntar. 😊
+';
                     break;
                 }
+
+       switch (command) { // depending on the command, perform an action
+                case '3': {
+                    sender.body = 'Nuestros horarios de atención son los siguientes:
+
+📅 **Lunes a Viernes:** 9:00 AM - 10:00 PM
+📅 **Sábado:** 10:00 AM - 10:00 PM
+📅 **Domingo:** Disponible las 24 horas
+
+Si necesitas ayuda dentro de estos horarios, estaremos encantados de atenderte. 😊
+';
+                    break;
+                }
+
+       switch (command) { // depending on the command, perform an action
+                case '4': {
+                    sender.body = '🚀 **¡Bienvenido a Lunar Hosting!** 🌕
+
+Para iniciar el proceso, por favor, proporciona los siguientes datos:
+
+1. **Nombre:** 
+2. **Apellido:** 
+3. **Correo electrónico:** 
+4. **Número de teléfono:**
+
+Ahora, algunas preguntas rápidas:
+
+5. ¿Tienes hosting de terceros?  
+   - **Sí** / **No**
+
+6. ¿Te gustaría agregar **Energía Lunar** a tu plan de hosting?  
+   - **Sí** / **No**
+
+7. ¿Ya tienes un dominio registrado o necesitas comprar uno?  
+   - **Ya tengo un dominio** / **Necesito comprar uno**
+
+8. ¿Tienes un sitio web **WordPress** activo ahora?  
+   - **Sí** / **No**
+
+Tus datos serán almacenados según nuestra **Política de Privacidad** y nuestros **Términos y Condiciones**. Puedes revisarlos aquí: [ate.com.gt/pos](http://ate.com.gt/pos) 🔐
+
+Por favor, responde con los datos y opciones para continuar. ¡Gracias! 🌟
+';
+                    break;
+                }
+
+               
                 case 'IMAGE': {
                     sender.caption = 'Text under the photo.';
                     sender.media = fs.createReadStream(FILES.IMAGE); // read file
@@ -124,38 +171,23 @@ async function handleNewMessages(req, res){ // handle messages
                     endpoint = 'messages/video';
                     break;
                 }
-                case 'CONTACT': {
-                    sender.name = 'Whapi Test';
-                    sender.vcard = fs.readFileSync(FILES.VCARD).toString();
-                    endpoint = 'messages/contact';
-                    break;
-                }
-                case 'PRODUCT': {
+      
+                
+                case '1': {
                     /* you can get real product id using endpoint  https://whapi.readme.io/reference/getproducts */
                     endpoint = `business/products/${config.product}`;
                     break;
                 }
-                case 'GROUP_CREATE': {
-                    /* Warning : you can create group only with contacts from phone contact list */
-                    const res = await sendWhapiRequest(`groups`, {subject: 'Whapi.Cloud Test', participants: [message.chat_id.split('@')[0]]});
-                    sender.body = res.group_id ? `Group created. Group id: ${res.group_id}` : 'Error';
-                    break;
-                }
-                case 'GROUP_TEXT': {
-                    /*To get group id, use /groups endpoint */
-                    sender.to = config.group;
-                    sender.body = 'Simple text message for the group';
-                    break;
-                }
-                case 'GROUPS_IDS': { // get groups
-                    const {groups} = await sendWhapiRequest('groups', {count: 3}, 'GET');
-                    sender.body = groups && groups.reduce((prevVal, currVal, i) => {
-                        return i === 0 ? `${currVal.id} - ${currVal.name}` : prevVal + ',\n ' + `${currVal.id} - ${currVal.name}`;
-                    }, '') || 'No groups';
-                    break;
-                }
+               
+                
                 default: {  // if command not found - set text message with commands
-                    sender.body = 'Hi. Send me a number from the list. Don\'t forget to change the actual data in the code!  \n\n' +
+                    sender.body = '¡Hola! 🤖 Soy el asistente virtual de Luna. Estoy aquí para ayudarte. ¿En qué puedo asistirte hoy?
+
+1. Información de productos
+2. Soporte técnico
+3. Horarios de atención
+4. Solicitar Hosting Lunar
+  \n\n' +
                         Object.values(COMMANDS).map((text, i) => `${i + 1}. ${text}`).join('\n');
                 }
             }
